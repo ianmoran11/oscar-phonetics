@@ -1,0 +1,83 @@
+.spinning-fan {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 -10px 30px rgba(0, 0, 0, 0.3),
+    inset 0 10px 30px rgba(255, 255, 255, 0.4);
+  border: 6px solid rgba(255, 255, 255, 0.5);
+}
+
+.fan-blades {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.fan-blade {
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  top: 30%;
+  left: 30%;
+  transform-origin: center;
+  border-radius: 50% 0 50% 0;
+  opacity: 0.3;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.fan-center {
+  position: relative;
+  z-index: 10;
+  width: 60%;
+  height: 60%;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.8),
+    inset 0 -5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.fan-letter {
+  font-family: var(--font-main);
+  font-size: 4rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .spinning-fan {
+    width: 150px;
+    height: 150px;
+  }
+
+  .fan-letter {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .spinning-fan {
+    width: 120px;
+    height: 120px;
+  }
+
+  .fan-letter {
+    font-size: 2.5rem;
+  }
+}

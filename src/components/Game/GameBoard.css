@@ -1,0 +1,80 @@
+.game-board {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.game-board.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  font-family: var(--font-main);
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.game-instruction {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 20px;
+  animation: bounce 1s ease-in-out;
+}
+
+.game-instruction p {
+  font-family: var(--font-main);
+  font-size: 2rem;
+  color: white;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.letter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-board {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .game-instruction p {
+    font-size: 1.5rem;
+  }
+
+  .letter-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-instruction p {
+    font-size: 1.2rem;
+  }
+
+  .letter-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
