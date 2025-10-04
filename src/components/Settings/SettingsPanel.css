@@ -201,6 +201,114 @@
   line-height: 1.6;
 }
 
+/* Letter Selector */
+.letter-selector {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 15px;
+  margin-top: 1rem;
+}
+
+.letter-selector-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.select-all-button,
+.deselect-all-button {
+  flex: 1;
+  padding: 0.8rem;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  border: 2px solid #667eea;
+  border-radius: 10px;
+  background: white;
+  color: #667eea;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.select-all-button:hover,
+.deselect-all-button:hover {
+  background: #667eea;
+  color: white;
+}
+
+.letter-grid-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.letter-tile {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.letter-tile.enabled {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.letter-tile.disabled {
+  opacity: 0.4;
+  filter: grayscale(100%);
+  transform: scale(0.95);
+}
+
+.letter-tile:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.letter-tile-symbol {
+  font-family: var(--font-main);
+  font-size: 2rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  user-select: none;
+}
+
+.letter-tile-check {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #2ECC71;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.letter-selector-info {
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  color: #666;
+  text-align: center;
+  margin: 0;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .settings-header h2 {
@@ -252,5 +360,18 @@
   .toggle-button {
     font-size: 1.1rem;
     padding: 0.8rem 1.5rem;
+  }
+  
+  .letter-grid-selector {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .letter-tile-symbol {
+    font-size: 1.5rem;
+  }
+  
+  .letter-selector-actions {
+    flex-direction: column;
   }
 }

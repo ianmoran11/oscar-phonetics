@@ -1,9 +1,18 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
+import { letters, getLettersByDifficulty } from '../../data/letters'
 import './SettingsPanel.css'
 
 function SettingsPanel({ onClose }) {
   const { settings, updateSettings, resetGame } = useGameStore()
+  const [showLetterSelector, setShowLetterSelector] = useState(false)
+  
+  // Get available letters based on current difficulty
+  const availableLetters = getLettersByDifficulty(settings.difficulty)
+  
+  // Initialize enabled letters if null
+  const enabledLetters = settings.enabledLetters || availableLetters.map(l => l.id)
 
   const handleNumChoicesChange = (e) => {
     updateSettings({ numChoices: parseInt(e.target.value) })
@@ -24,6 +33,38 @@ function SettingsPanel({ onClose }) {
   const handleReset = () => {
     resetGame()
     onClose()
+  }
+  
+  const toggleLetter = (letterId) => {
+    const currentEnabled = settings.enabledLetters || availableLetters.map(l => l.id)
+    
+    if (currentEnabled.includes(letterId)) {
+      // Remove letter (but keep at least 3 letters)
+      const newEnabled = currentEnabled.filter(id => id !== letterId)
+      if (newEnabled.length >= settings.numChoices) {
+        updateSettings({ enabledLetters: newEnabled })
+      } else {
+        alert(`You must have at least ${settings.numChoices} letters enabled!`)
+      }
+    } else {
+      // Add letter
+      updateSettings({ enabledLetters: [...currentEnabled, letterId] })
+    }
+  }
+  
+  const selectAllLetters = () => {
+    updateSettings({ enabledLetters: null }) // null means all letters
+  }
+  
+  const deselectAllLetters = () => {
+    // Keep only the first few letters to meet minimum requirement
+    const minLetters = availableLetters.slice(0, settings.numChoices).map(l => l.id)
+    updateSettings({ enabledLetters: minLetters })
+  }
+  
+  const isLetterEnabled = (letterId) => {
+    if (!settings.enabledLetters) return true // null means all enabled
+    return settings.enabledLetters.includes(letterId)
   }
 
   return (
@@ -108,6 +149,66 @@ function SettingsPanel({ onClose }) {
                 />
                 <span className="setting-value">{Math.round(settings.volume * 100)}%</span>
               </div>
+            </div>
+          )}
+
+          {/* Letter Selection */}
+          <div className="setting-item">
+            <label>Choose Letters to Practice</label>
+            <button 
+              className="toggle-button"
+              onClick={() => setShowLetterSelector(!showLetterSelector)}
+            >
+              {showLetterSelector ? '▼ Hide Letters' : '▶ Select Letters'}
+            </button>
+          </div>
+
+          {/* Letter Selector Grid */}
+          {showLetterSelector && (
+            <div className="letter-selector">
+              <div className="letter-selector-actions">
+                <button 
+                  className="select-all-button"
+                  onClick={selectAllLetters}
+                >
+                  ✓ Select All
+                </button>
+                <button 
+                  className="deselect-all-button"
+                  onClick={deselectAllLetters}
+                >
+                  ✕ Deselect All
+                </button>
+              </div>
+              
+              <div className="letter-grid-selector">
+                {availableLetters.map((letter) => (
+                  <button
+                    key={letter.id}
+                    className={`letter-tile ${
+                      isLetterEnabled(letter.id) ? 'enabled' : 'disabled'
+                    }`}
+                    style={{
+                      backgroundColor: isLetterEnabled(letter.id) 
+                        ? letter.color 
+                        : '#ccc'
+                    }}
+                    onClick={() => toggleLetter(letter.id)}
+                  >
+                    <span className="letter-tile-symbol">{letter.symbol}</span>
+                    {isLetterEnabled(letter.id) && (
+                      <span className="letter-tile-check">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              
+              <p className="letter-selector-info">
+                {settings.enabledLetters 
+                  ? `${settings.enabledLetters.length} letters selected`
+                  : `All ${availableLetters.length} letters selected`
+                }
+              </p>
             </div>
           )}
 

@@ -18,12 +18,27 @@ export const useGameStore = create((set, get) => ({
     difficulty: 'easy',
     soundEnabled: true,
     volume: 0.8,
+    enabledLetters: null, // null means use all letters from difficulty level
   },
   
   // Actions
   startNewRound: () => {
     const { settings } = get()
-    const availableLetters = getLettersByDifficulty(settings.difficulty)
+    let availableLetters = getLettersByDifficulty(settings.difficulty)
+    
+    // Filter by enabled letters if custom selection is active
+    if (settings.enabledLetters && settings.enabledLetters.length > 0) {
+      availableLetters = availableLetters.filter(letter => 
+        settings.enabledLetters.includes(letter.id)
+      )
+    }
+    
+    // Make sure we have enough letters
+    if (availableLetters.length < settings.numChoices) {
+      console.warn('Not enough enabled letters, using all available')
+      availableLetters = getLettersByDifficulty(settings.difficulty)
+    }
+    
     const targetLetter = getRandomLetter(availableLetters)
     const choices = getLetterChoices(targetLetter, settings.numChoices, availableLetters)
     
