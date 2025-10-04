@@ -1,6 +1,7 @@
 /**
  * Letter data for the learning app
  * Based on Australian English phonemes from Macquarie University
+ * Letters are organized by difficulty
  */
 
 export const letters = [
@@ -37,13 +38,21 @@ export const letters = [
 ]
 
 /**
- * Get letters filtered by difficulty
+ * Get all letters organized by difficulty
  */
-export function getLettersByDifficulty(difficulty = 'easy') {
-  const difficultyOrder = { easy: 1, medium: 2, hard: 3 }
-  const maxLevel = difficultyOrder[difficulty] || 1
-  
-  return letters.filter(letter => difficultyOrder[letter.difficulty] <= maxLevel)
+export function getAllLetters() {
+  return letters
+}
+
+/**
+ * Get letters grouped by difficulty for display
+ */
+export function getLettersByDifficultyGroup() {
+  return {
+    easy: letters.filter(l => l.difficulty === 'easy'),
+    medium: letters.filter(l => l.difficulty === 'medium'),
+    hard: letters.filter(l => l.difficulty === 'hard'),
+  }
 }
 
 /**

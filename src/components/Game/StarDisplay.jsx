@@ -4,7 +4,7 @@ import './StarDisplay.css'
 
 function StarDisplay() {
   const stars = useGameStore((state) => state.stars)
-  const maxStars = 5
+  const maxStars = useGameStore((state) => state.settings.starsForVictory)
 
   return (
     <div className="star-display">

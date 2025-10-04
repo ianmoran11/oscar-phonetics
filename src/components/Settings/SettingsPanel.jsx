@@ -1,25 +1,26 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
-import { letters, getLettersByDifficulty } from '../../data/letters'
+import { getAllLetters, getLettersByDifficultyGroup } from '../../data/letters'
 import './SettingsPanel.css'
 
 function SettingsPanel({ onClose }) {
   const { settings, updateSettings, resetGame } = useGameStore()
   const [showLetterSelector, setShowLetterSelector] = useState(false)
   
-  // Get available letters based on current difficulty
-  const availableLetters = getLettersByDifficulty(settings.difficulty)
+  // Get all letters organized by difficulty
+  const allLetters = getAllLetters()
+  const letterGroups = getLettersByDifficultyGroup()
   
   // Initialize enabled letters if null
-  const enabledLetters = settings.enabledLetters || availableLetters.map(l => l.id)
+  const enabledLetters = settings.enabledLetters || allLetters.map(l => l.id)
 
   const handleNumChoicesChange = (e) => {
     updateSettings({ numChoices: parseInt(e.target.value) })
   }
 
-  const handleDifficultyChange = (e) => {
-    updateSettings({ difficulty: e.target.value })
+  const handleStarsForVictoryChange = (e) => {
+    updateSettings({ starsForVictory: parseInt(e.target.value) })
   }
 
   const handleVolumeChange = (e) => {
@@ -36,7 +37,7 @@ function SettingsPanel({ onClose }) {
   }
   
   const toggleLetter = (letterId) => {
-    const currentEnabled = settings.enabledLetters || availableLetters.map(l => l.id)
+    const currentEnabled = settings.enabledLetters || allLetters.map(l => l.id)
     
     if (currentEnabled.includes(letterId)) {
       // Remove letter (but keep at least 3 letters)
@@ -58,8 +59,13 @@ function SettingsPanel({ onClose }) {
   
   const deselectAllLetters = () => {
     // Keep only the first few letters to meet minimum requirement
-    const minLetters = availableLetters.slice(0, settings.numChoices).map(l => l.id)
+    const minLetters = allLetters.slice(0, settings.numChoices).map(l => l.id)
     updateSettings({ enabledLetters: minLetters })
+  }
+  
+  const selectDifficulty = (difficulty) => {
+    const letters = letterGroups[difficulty].map(l => l.id)
+    updateSettings({ enabledLetters: letters })
   }
   
   const isLetterEnabled = (letterId) => {
@@ -104,19 +110,20 @@ function SettingsPanel({ onClose }) {
             </div>
           </div>
 
-          {/* Difficulty */}
+          {/* Stars for Victory */}
           <div className="setting-item">
-            <label htmlFor="difficulty">Difficulty Level</label>
-            <select
-              id="difficulty"
-              value={settings.difficulty}
-              onChange={handleDifficultyChange}
-              className="setting-select"
-            >
-              <option value="easy">Easy (Basic Letters)</option>
-              <option value="medium">Medium (More Letters)</option>
-              <option value="hard">Hard (All Letters)</option>
-            </select>
+            <label htmlFor="stars-for-victory">Stars Needed to Win</label>
+            <div className="setting-control">
+              <input
+                id="stars-for-victory"
+                type="range"
+                min="1"
+                max="10"
+                value={settings.starsForVictory}
+                onChange={handleStarsForVictoryChange}
+              />
+              <span className="setting-value">{settings.starsForVictory} ⭐</span>
+            </div>
           </div>
 
           {/* Sound Toggle */}
@@ -171,42 +178,110 @@ function SettingsPanel({ onClose }) {
                   className="select-all-button"
                   onClick={selectAllLetters}
                 >
-                  ✓ Select All
+                  ✓ All
                 </button>
                 <button 
-                  className="deselect-all-button"
-                  onClick={deselectAllLetters}
+                  className="difficulty-button easy"
+                  onClick={() => selectDifficulty('easy')}
                 >
-                  ✕ Deselect All
+                  Easy
+                </button>
+                <button 
+                  className="difficulty-button medium"
+                  onClick={() => selectDifficulty('medium')}
+                >
+                  Medium
+                </button>
+                <button 
+                  className="difficulty-button hard"
+                  onClick={() => selectDifficulty('hard')}
+                >
+                  Hard
                 </button>
               </div>
               
-              <div className="letter-grid-selector">
-                {availableLetters.map((letter) => (
-                  <button
-                    key={letter.id}
-                    className={`letter-tile ${
-                      isLetterEnabled(letter.id) ? 'enabled' : 'disabled'
-                    }`}
-                    style={{
-                      backgroundColor: isLetterEnabled(letter.id) 
-                        ? letter.color 
-                        : '#ccc'
-                    }}
-                    onClick={() => toggleLetter(letter.id)}
-                  >
-                    <span className="letter-tile-symbol">{letter.symbol}</span>
-                    {isLetterEnabled(letter.id) && (
-                      <span className="letter-tile-check">✓</span>
-                    )}
-                  </button>
-                ))}
+              {/* Easy Letters Section */}
+              <div className="letter-difficulty-section">
+                <h4 className="difficulty-heading easy-heading">⭐ Easy Letters</h4>
+                <div className="letter-grid-selector">
+                  {letterGroups.easy.map((letter) => (
+                    <button
+                      key={letter.id}
+                      className={`letter-tile ${
+                        isLetterEnabled(letter.id) ? 'enabled' : 'disabled'
+                      }`}
+                      style={{
+                        backgroundColor: isLetterEnabled(letter.id) 
+                          ? letter.color 
+                          : '#ccc'
+                      }}
+                      onClick={() => toggleLetter(letter.id)}
+                    >
+                      <span className="letter-tile-symbol">{letter.symbol}</span>
+                      {isLetterEnabled(letter.id) && (
+                        <span className="letter-tile-check">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Medium Letters Section */}
+              <div className="letter-difficulty-section">
+                <h4 className="difficulty-heading medium-heading">⭐⭐ Medium Letters</h4>
+                <div className="letter-grid-selector">
+                  {letterGroups.medium.map((letter) => (
+                    <button
+                      key={letter.id}
+                      className={`letter-tile ${
+                        isLetterEnabled(letter.id) ? 'enabled' : 'disabled'
+                      }`}
+                      style={{
+                        backgroundColor: isLetterEnabled(letter.id) 
+                          ? letter.color 
+                          : '#ccc'
+                      }}
+                      onClick={() => toggleLetter(letter.id)}
+                    >
+                      <span className="letter-tile-symbol">{letter.symbol}</span>
+                      {isLetterEnabled(letter.id) && (
+                        <span className="letter-tile-check">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Hard Letters Section */}
+              <div className="letter-difficulty-section">
+                <h4 className="difficulty-heading hard-heading">⭐⭐⭐ Hard Letters</h4>
+                <div className="letter-grid-selector">
+                  {letterGroups.hard.map((letter) => (
+                    <button
+                      key={letter.id}
+                      className={`letter-tile ${
+                        isLetterEnabled(letter.id) ? 'enabled' : 'disabled'
+                      }`}
+                      style={{
+                        backgroundColor: isLetterEnabled(letter.id) 
+                          ? letter.color 
+                          : '#ccc'
+                      }}
+                      onClick={() => toggleLetter(letter.id)}
+                    >
+                      <span className="letter-tile-symbol">{letter.symbol}</span>
+                      {isLetterEnabled(letter.id) && (
+                        <span className="letter-tile-check">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
               
               <p className="letter-selector-info">
                 {settings.enabledLetters 
                   ? `${settings.enabledLetters.length} letters selected`
-                  : `All ${availableLetters.length} letters selected`
+                  : `All ${allLetters.length} letters selected`
                 }
               </p>
             </div>
@@ -222,7 +297,7 @@ function SettingsPanel({ onClose }) {
 
         <div className="settings-footer">
           <p className="settings-note">
-            💡 Tip: Start with Easy mode and 3 choices for young learners
+            💡 Tip: Start with 3 choices, 5 stars, and Easy letters for young learners
           </p>
         </div>
       </motion.div>

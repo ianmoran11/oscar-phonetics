@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useAudio } from '../../hooks/useAudio'
+import { useGameStore } from '../../store/gameStore'
 import './VictoryScreen.css'
 
 function VictoryScreen({ onPlayAgain }) {
   const { play } = useAudio()
+  const starsForVictory = useGameStore((state) => state.settings.starsForVictory)
 
   useEffect(() => {
     play('/sounds/celebration.mp3')
@@ -95,7 +97,7 @@ function VictoryScreen({ onPlayAgain }) {
         </motion.h1>
 
         <div className="victory-stars">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(starsForVictory)].map((_, i) => (
             <motion.span
               key={i}
               className="victory-star"
@@ -120,7 +122,7 @@ function VictoryScreen({ onPlayAgain }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          You got 5 stars!
+          You got {starsForVictory} stars!
           <br />
           Great job learning your letters!
         </motion.p>

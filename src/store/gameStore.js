@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getLettersByDifficulty, getRandomLetter, getLetterChoices } from '../data/letters'
+import { getAllLetters, getRandomLetter, getLetterChoices } from '../data/letters'
 
 /**
  * Global game state using Zustand
@@ -15,16 +15,16 @@ export const useGameStore = create((set, get) => ({
   // Settings
   settings: {
     numChoices: 3,
-    difficulty: 'easy',
     soundEnabled: true,
     volume: 0.8,
-    enabledLetters: null, // null means use all letters from difficulty level
+    enabledLetters: null, // null means use all letters
+    starsForVictory: 5, // Number of stars needed to win (1-10)
   },
   
   // Actions
   startNewRound: () => {
     const { settings } = get()
-    let availableLetters = getLettersByDifficulty(settings.difficulty)
+    let availableLetters = getAllLetters()
     
     // Filter by enabled letters if custom selection is active
     if (settings.enabledLetters && settings.enabledLetters.length > 0) {
@@ -36,7 +36,7 @@ export const useGameStore = create((set, get) => ({
     // Make sure we have enough letters
     if (availableLetters.length < settings.numChoices) {
       console.warn('Not enough enabled letters, using all available')
-      availableLetters = getLettersByDifficulty(settings.difficulty)
+      availableLetters = getAllLetters()
     }
     
     const targetLetter = getRandomLetter(availableLetters)
@@ -50,7 +50,7 @@ export const useGameStore = create((set, get) => ({
   },
   
   checkAnswer: (selectedLetter) => {
-    const { currentLetter, stars, isProcessing } = get()
+    const { currentLetter, stars, isProcessing, settings } = get()
     
     // Prevent multiple clicks during animation
     if (isProcessing) {
@@ -67,14 +67,15 @@ export const useGameStore = create((set, get) => ({
     set({ isProcessing: true })
     
     const isCorrect = selectedLetter.id === currentLetter.id
+    const { starsForVictory } = settings
     const newStars = isCorrect 
-      ? Math.min(stars + 1, 5) 
+      ? Math.min(stars + 1, starsForVictory) 
       : Math.max(stars - 1, 0)
     
     set({ stars: newStars })
     
     // Check for victory
-    if (newStars >= 5) {
+    if (newStars >= starsForVictory) {
       setTimeout(() => {
         set({ showVictory: true })
       }, 5000) // Show victory after fan animation
@@ -89,7 +90,7 @@ export const useGameStore = create((set, get) => ({
   
   addStar: () => {
     set((state) => ({ 
-      stars: Math.min(state.stars + 1, 5) 
+      stars: Math.min(state.stars + 1, state.settings.starsForVictory) 
     }))
   },
   

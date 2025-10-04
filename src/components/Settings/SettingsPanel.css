@@ -211,16 +211,19 @@
 
 .letter-selector-actions {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .select-all-button,
-.deselect-all-button {
+.deselect-all-button,
+.difficulty-button {
   flex: 1;
-  padding: 0.8rem;
+  min-width: 70px;
+  padding: 0.7rem 0.5rem;
   font-family: var(--font-secondary);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   border: 2px solid #667eea;
   border-radius: 10px;
@@ -231,8 +234,69 @@
 }
 
 .select-all-button:hover,
-.deselect-all-button:hover {
+.deselect-all-button:hover,
+.difficulty-button:hover {
   background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.difficulty-button.easy {
+  border-color: #2ECC71;
+  color: #2ECC71;
+}
+
+.difficulty-button.easy:hover {
+  background: #2ECC71;
+  color: white;
+}
+
+.difficulty-button.medium {
+  border-color: #F39C12;
+  color: #F39C12;
+}
+
+.difficulty-button.medium:hover {
+  background: #F39C12;
+  color: white;
+}
+
+.difficulty-button.hard {
+  border-color: #E74C3C;
+  color: #E74C3C;
+}
+
+.difficulty-button.hard:hover {
+  background: #E74C3C;
+  color: white;
+}
+
+.letter-difficulty-section {
+  margin-bottom: 1.5rem;
+}
+
+.difficulty-heading {
+  font-family: var(--font-main);
+  font-size: 1.3rem;
+  margin: 0 0 0.75rem 0;
+  padding: 0.5rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.easy-heading {
+  background: linear-gradient(135deg, #2ECC71, #27AE60);
+  color: white;
+}
+
+.medium-heading {
+  background: linear-gradient(135deg, #F39C12, #E67E22);
+  color: white;
+}
+
+.hard-heading {
+  background: linear-gradient(135deg, #E74C3C, #C0392B);
   color: white;
 }
 
@@ -240,7 +304,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   gap: 0.75rem;
-  margin-bottom: 1rem;
 }
 
 .letter-tile {
