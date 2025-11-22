@@ -65,7 +65,6 @@ function LetterButton({ letter, isTarget, onComplete }) {
       ) : (
         <motion.button
           className="letter-button"
-          style={{ backgroundColor: letter.color }}
           onClick={handleClick}
           disabled={isProcessing}
           animate={showIncorrect ? {

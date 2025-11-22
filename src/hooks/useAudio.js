@@ -10,12 +10,6 @@ export function useAudio() {
   
   const play = useCallback((soundFile) => {
     if (!settings.soundEnabled) return
-    if (!settings.soundEnabled) {
-      console.log('Sound is disabled in settings')
-      return
-    }
-    
-    console.log('Attempting to play:', soundFile)
     
     // Stop any currently playing audio
     if (audioRef.current) {
@@ -27,29 +21,9 @@ export function useAudio() {
     audioRef.current = new Audio(soundFile)
     audioRef.current.volume = settings.volume
     
-
-
-    // Add error handling for file loading
-    audioRef.current.addEventListener('error', (e) => {
-      console.error('Audio file failed to load:', soundFile, e)
-      alert(`Audio file not found: ${soundFile}\n\nPlease add audio files to public/sounds/phonemes/`)
+    audioRef.current.play().catch(error => {
+      console.error('Audio playback failed:', error)
     })
-    
-    audioRef.current.addEventListener('canplaythrough', () => {
-      console.log('Audio loaded successfully:', soundFile)
-    })
-    
-    audioRef.current.play()
-      .then(() => {
-        console.log('Audio playing:', soundFile)
-      })
-      .catch(error => {
-        console.error('Audio playback failed:', error)
-        // If autoplay is blocked, show user-friendly message
-        if (error.name === 'NotAllowedError') {
-          console.warn('Autoplay blocked. User interaction required.')
-        }
-      })
   }, [settings.soundEnabled, settings.volume])
   
   const stop = useCallback(() => {
